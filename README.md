@@ -15,13 +15,13 @@
 * It is convenient for microcontroller program developers to send commands using BLE serial communications and have the microcontroller perform desired actions in response to those commands. This application can realise this requirement on a Windows PC.
 
 ### How to download
-<!--
-* Open the URL [https://github.com/healthywalk/Serial_Terminal_plus/](https://github.com/healthywalk/Serial_Terminal_plus/)
+
+* Open the URL [https://github.com/healthywalk/BLE-Serial-Terminal/](https://https://github.com/healthywalk/BLE-Serial-Terminal/)
 * Select "Download Zip" from the green button labeled "code".
-* "Serial_Terminal_plus-main.zip" will be downloaded, so unzip it.
-* You will find "Serial_Terminal_plus.exe" in Serial_Terminal_plus-main \ Serial_Terminal_plus \ bin \ Release.
-* You can put "Serial_Terminal_plus.exe" in a convenient place and start it by double-clicking.
--->
+* "BLE-Serial-Terminal-main.zip" will be downloaded, so unzip it.
+* You will find "BLE_Serial_Terminal.exe" in BLE-Serial-Terminal-main \ BLE_Serial_Terminal \ bin \ Release.
+* You can put "BLE_Serial_Terminal.exe" in a convenient place and start it by double-clicking.
+
 
 ### How to use
 
