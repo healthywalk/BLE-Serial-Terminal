@@ -439,18 +439,17 @@ namespace BLE_Serial_Terminal
             Properties.Settings.Default.timestamp = this.cBoxTimeStamp.Checked;
 
             Properties.Settings.Default.commandstring = this.custumbuttons[0].Text;
-            for (int i = 1; i < 20; i++)
+            for (int i = 1; i < NumButtons; i++)
             {
                 Properties.Settings.Default.commandstring += '\t' + this.custumbuttons[i].Text;
             }
             Properties.Settings.Default.stringforsend = this.stringtobesent[0];
-            for (int i = 1; i < 20; i++)
+            for (int i = 1; i < NumButtons; i++)
             {
                 Properties.Settings.Default.stringforsend += '\t' + this.stringtobesent[i];
             }
-            Properties.Settings.Default.stringforsend += "\tdummy";
             Properties.Settings.Default.justinsert = this.justinsert[0];
-            for (int i = 1; i < 20; i++)
+            for (int i = 1; i < NumButtons; i++)
             {
                 Properties.Settings.Default.justinsert += '\t' + this.justinsert[i];
             }
@@ -469,42 +468,53 @@ namespace BLE_Serial_Terminal
         private string[] justinsert;
         private const String Notsetyet = "undefined";
         private const String Notsetyet_old = "Not set yet";
+        private const int NumButtons = 20;
 
         private void generateCustumButton()
         {
-            this.custumbuttons = new Button[20];
-            string[] buttontext = new string[20]; //これは更新されない
-            this.stringtobesent = new string[20+1]; //dummy文字列の分
-            this.justinsert = new string[20];
+            this.custumbuttons = new Button[NumButtons];
+            string[] buttontext = new string[NumButtons]; //これは作業用
+            this.stringtobesent = new string[NumButtons];
+            this.justinsert = new string[NumButtons];
+            int num = 0;
 
-            Boolean canrestore = false;
+            for (int i0 = 0; i0 < custumbuttons.Length; i0++)
+            {
+                buttontext[i0] = Notsetyet;
+                this.stringtobesent[i0] = "";
+                this.justinsert[i0] = "yes";
+            }
             if (Properties.Settings.Default.commandstring != "none")
             {
-                canrestore = true;
-                buttontext = Properties.Settings.Default.commandstring.Split('\t');
+                string[] tmpstr = Properties.Settings.Default.commandstring.Split('\t');
+                num = tmpstr.Length;
+                if (NumButtons < num) num = NumButtons;
+                for (int i0 = 0; i0 < num; i0++)
+                {
+                    buttontext[i0] = tmpstr[i0];
+                }
             }
             if (Properties.Settings.Default.stringforsend != "none")
             {
-                this.stringtobesent = Properties.Settings.Default.stringforsend.Split('\t');
-            }
-            else
-            {
-                for (int i0 = 0; i0 < custumbuttons.Length; i0++)
+                string[] tmpstr = Properties.Settings.Default.stringforsend.Split('\t');
+                num = tmpstr.Length;
+                if (NumButtons < num) num = NumButtons;
+                for (int i0 = 0; i0 < num; i0++)
                 {
-                    this.stringtobesent[i0] = "";
+                    this.stringtobesent[i0] = tmpstr[i0];
                 }
             }
             if (Properties.Settings.Default.justinsert != "none")
             {
-                justinsert = Properties.Settings.Default.justinsert.Split('\t');
-            }
-            else
-            {
-                for (int i0 = 0; i0 < custumbuttons.Length; i0++)
+                string[] tmpstr = Properties.Settings.Default.justinsert.Split('\t');
+                num = tmpstr.Length;
+                if (NumButtons < num) num = NumButtons;
+                for (int i0 = 0; i0 < num; i0++)
                 {
-                    justinsert[i0] = "yes";
+                    this.justinsert[i0] = tmpstr[i0];
                 }
             }
+
             for (int i0 = 0; i0 < custumbuttons.Length; i0++)
             {
                 int i = i0 % 10;
@@ -514,14 +524,8 @@ namespace BLE_Serial_Terminal
 
                 //プロパティ設定
                 this.custumbuttons[i0].Name = "custumbtn" + (i0 + 1).ToString();
-                if (canrestore == true)
-                {
-                    this.custumbuttons[i0].Text = buttontext[i0];
-                }
-                else
-                {
-                    this.custumbuttons[i0].Text = Notsetyet;
-                }
+                this.custumbuttons[i0].Text = buttontext[i0];
+
                 this.custumbuttons[i0].Top = this.textToBeSent.Bottom + 20 + j * 27;
                 this.custumbuttons[i0].Height = 25;
                 this.custumbuttons[i0].Width = 62;
@@ -632,18 +636,24 @@ namespace BLE_Serial_Terminal
                 {
                     //Debug.WriteLine("importSettings [" + line + "]");
                     textb = line.Split(',');
-                    try
+                    if (textb.Length == 4)
                     {
-                        //Debug.WriteLine("importSettings num = " + textb.Length);
-                        index = Int32.Parse(textb[0]);
-                        this.custumbuttons[index].Text = textb[1];
-                        this.stringtobesent[index] = textb[2];
-                        string debtmp = textb[3];
-                        this.justinsert[index] = debtmp;
-                    }
-                    catch (FormatException)
-                    {
-                        MessageBox.Show(textb[0]);
+                        try
+                        {
+                            //Debug.WriteLine("importSettings num = " + textb.Length); //4
+                            index = Int32.Parse(textb[0]);
+                            if (index < custumbuttons.Length)
+                            {
+                                this.custumbuttons[index].Text = textb[1];
+                                this.stringtobesent[index] = textb[2];
+                                string debtmp = textb[3];
+                                this.justinsert[index] = debtmp;
+                            }
+                        }
+                        catch (FormatException)
+                        {
+                            MessageBox.Show(textb[0]);
+                        }
                     }
 
                 }
