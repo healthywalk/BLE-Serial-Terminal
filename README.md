@@ -44,4 +44,4 @@ https://github.com/nkolban/ESP32_BLE_Arduino/blob/master/examples/BLE_uart/BLE_u
 When this program is compiled using the board library esp32/Espressif Systems 3.2.1, it communicates with the BLE-Serial-Terminal without any problems. However, when compiled using the board library esp32/Espressif Systems 3.3.7, communication fails.
 
 (2) Arduino IDE NimBLE-uart Sample Program\
-A BLE-uart program is created using the library NimBLE-Arduino/h2zero. Even when compiled using the board library esp32/Espressif Systems 3.3.7, it communicates with the BLE-Serial-Terminal without any problems.
+A BLE-uart program "NimBLE-uart-Sample" is created using the library NimBLE-Arduino/h2zero. Even when compiled using the board library esp32/Espressif Systems 3.3.7, it communicates with the BLE-Serial-Terminal without any problems.
