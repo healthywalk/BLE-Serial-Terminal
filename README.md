@@ -5,10 +5,10 @@
 * A Windows PC application designed to communicate with a microcontroller using BLE. Communicates using the BLE UART Profile. It works on Windows 10 and 11.
 * The Windows PC acts as a Central (or Master or Observer) of the BLE connection communication. The other microcontroller acts as a Peripheral (or Slave or Broadcaster).
 * Frequently used transmission strings can be registered using the customizable buttons and sent by clicking.
-* The number of buttons that can be registered is 10.
+* The number of buttons that can be registered is 20.
 * A time stamp can be added to the beginning of the incoming line of text.
 * The transmitted string can be included in the received content as a local echo.
-* You can save the received contents to a text file.
+* You can save the currently displayed log to a text file.
 
 ### Convenient usage
 
@@ -22,7 +22,6 @@
 * You will find "BLE_Serial_Terminal.exe" in BLE-Serial-Terminal-main \ BLE_Serial_Terminal \ bin \ Release.
 * You can put "BLE_Serial_Terminal.exe" in a convenient place and start it by double-clicking.
 
-
 ### How to use
 
 * On the microcontroller, run a program that uses the BLE connection communication.
@@ -33,6 +32,15 @@
 * The received string from the microcontroller is displayed in "Text Received".
 * When you press the button "Save Log", you can save the contents of the received text area at that time in a text file.
 * To register a character string for a custom button, Shift-click the button you want to register. Up to 36 buttons can be used.
-* To exit, press the button "Disconnect" and then the exit button on the upper right.
+* To exit, press the "Disconnect" button and then the exit button on the upper right.
 
-<img src="BLE_serial_terminal.jpg" width=80%>
+   <img src="BLE_serial_terminal.jpg" width=80%>
+
+### Known Issues with BLE Communication with ESP32
+
+(1) Arduino IDE BLE-uart Sample Program\
+https://github.com/nkolban/ESP32_BLE_Arduino/blob/master/examples/BLE_uart/BLE_uart.ino\
+When this program is compiled using the board library esp32/Espressif Systems 3.2.1, it communicates with the BLE-Serial-Terminal without any problems. However, when compiled using the board library esp32/Espressif Systems 3.3.7, communication fails.
+
+(2) Arduino IDE NimBLE-uart Sample Program\
+A BLE-uart program is created using the library NimBLE-Arduino/h2zero. Even when compiled using the board library esp32/Espressif Systems 3.3.7, it communicates with the BLE-Serial-Terminal without any problems.
