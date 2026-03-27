@@ -39,7 +39,7 @@
 ### Known Issues with BLE Communication with ESP32
 
 (1) Arduino IDE BLE-uart Sample Program\
-https://github.com/nkolban/ESP32_BLE_Arduino/blob/master/examples/BLE_uart/BLE_uart.ino\
+https://github.com/nkolban/ESP32_BLE_Arduino/blob/master/examples/BLE_uart/BLE_uart.ino  \
 When this program is compiled using the board library esp32/Espressif Systems 3.2.1, it communicates with the BLE-Serial-Terminal without any problems. However, when compiled using the board library esp32/Espressif Systems 3.3.7, communication fails.
 
 (2) Arduino IDE NimBLE-uart Sample Program\
