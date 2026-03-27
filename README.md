@@ -37,6 +37,7 @@
    <img src="BLE_serial_terminal.jpg" width=80%>
 
 ### Known Issues with BLE Communication with ESP32
+27March2026
 
 (1) Arduino IDE BLE-uart Sample Program\
 https://github.com/nkolban/ESP32_BLE_Arduino/blob/master/examples/BLE_uart/BLE_uart.ino  \
