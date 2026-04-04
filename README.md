@@ -34,21 +34,5 @@
 * When you press the button "Save Log", you can save the contents of the received text area at that time in a text file.
 * To register a character string for a custom button, Shift-click the button you want to register. Up to 36 buttons can be used.
 * To exit, press the "Disconnect" button and then the exit button on the upper right.
-<<<<<<< HEAD
 
    <img src="BLE_serial_terminal.jpg" width=80%>
-
-=======
-
-   <img src="BLE_serial_terminal.jpg" width=80%>
-
-### Known Issues with BLE Communication with ESP32
-27March2026
-
-(1) Arduino IDE BLE-uart Sample Program\
-https://github.com/nkolban/ESP32_BLE_Arduino/blob/master/examples/BLE_uart/BLE_uart.ino  \
-When this program is compiled using the board library esp32/Espressif Systems 3.2.1, it communicates with the BLE-Serial-Terminal without any problems. However, when compiled using the board library esp32/Espressif Systems 3.3.7, communication fails.
-
-(2) Arduino IDE NimBLE-uart Sample Program\
-A BLE-uart program "NimBLE-uart-Sample" is created using the library NimBLE-Arduino/h2zero. Even when compiled using the board library esp32/Espressif Systems 3.3.7, it communicates with the BLE-Serial-Terminal without any problems.
->>>>>>> 05ec3baa0d9e43ffe5d40786272af243c5c47e54
