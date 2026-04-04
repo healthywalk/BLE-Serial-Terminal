@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.WindowsRuntime;        //Asbuffer
+using System.Security.Policy;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,6 +17,7 @@ using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.Advertisement;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Windows.Devices.Enumeration;
+using Windows.Foundation;
 //using System.Runtime.InteropServices;
 
 namespace BLE_Serial_Terminal
@@ -145,6 +147,7 @@ namespace BLE_Serial_Terminal
 
         private UInt64 address;
         private String devicename;
+        static private GattSession session = null;
 
         async Task connectSelectedDevice()
         {
@@ -153,18 +156,64 @@ namespace BLE_Serial_Terminal
                 //デバイスに接続する
                 Debug.WriteLine($"connecting Selected Device > {devicename}");
                 device = await BluetoothLEDevice.FromBluetoothAddressAsync(address);
+                if (device == null)
+                {
+                    Debug.WriteLine("Device connection failed.");
+                }
+                else
+                {
+                    Debug.WriteLine("The device has been connected.");
+                }
 
+                Debug.WriteLine($"0 device.ConnectionStatus: {device.ConnectionStatus}");
 
-                using (var session = await GattSession.FromDeviceIdAsync(device.BluetoothDeviceId))
+                if (device.DeviceInformation.Pairing.CanPair && !device.DeviceInformation.Pairing.IsPaired)
+                {
+                    // パスキー入力のポップアップを出す、またはシステムに任せる
+                    //evicePairingProtectionLevel
+                    //  Encryption 暗号化を使用してデバイスをペアリングします。
+                    //  EncryptionAndAuthentication 暗号化と認証を使用してデバイスをペアリングします。
+                    //  None 保護レベルを使用せず、デバイスをペアリングします。
+                    //var pairingResult = await device.DeviceInformation.Pairing.PairAsync(DevicePairingProtectionLevel.None);
+                    //デフォルトの設定でペアリングを試みます
+                    var pairingResult = await device.DeviceInformation.Pairing.PairAsync();
+                    Console.WriteLine($"Pairing Status: {pairingResult.Status}");
+                }
+                else
+                {
+                    Console.WriteLine($"Pairing CanPair: {device.DeviceInformation.Pairing.CanPair}");
+                    Console.WriteLine($"Pairing IsPaired: {device.DeviceInformation.Pairing.IsPaired}");
+                }
+
+                DeviceAccessStatus accessStatus = await device.RequestAccessAsync(); //追加20260301
+                if (accessStatus == DeviceAccessStatus.Allowed)
+                {
+                    Debug.WriteLine("BLE device accessStatu: Allowed");
+                }
+                else
+                {
+                    Debug.WriteLine("BLE device accessStatu: Not allowed");
+                }
+
+                //using (var session = await GattSession.FromDeviceIdAsync(device.BluetoothDeviceId))
+                session = await GattSession.FromDeviceIdAsync(device.BluetoothDeviceId);
                 {
                     session.MaintainConnection = true; // Keep the session as is.
+                    //NimBLEはここでonConnectが発火する
+                    //BLE (esp32/Espressif Systems 3.2.1) もここでonConnectが発火する
 
                     // Retrieve the service while maintaining the session.
-                    var services0 = await device.GetGattServicesAsync(BluetoothCacheMode.Uncached);
+                    //var services0 = await device.GetGattServicesAsync(BluetoothCacheMode.Uncached);
+                    var services0 = await device.GetGattServicesAsync(BluetoothCacheMode.Cached);
+                    //NimBLEはここでonConnectが発火する（session.MaintainConnection = true; がなかった場合）
                     Debug.WriteLine($"Status with Session: {services0.Status}");
                 }
 
-                Debug.WriteLine($"device.ConnectionStatus: {device.ConnectionStatus}");
+                Debug.WriteLine($"1 device.ConnectionStatus: {device.ConnectionStatus}");
+
+                var maxPduSize = session.MaxPduSize; //試しに接続する
+                Debug.WriteLine($"Max PDU Size: {maxPduSize}");
+                
 
                 // debug information  ---From here
                 var allServices = await device.GetGattServicesAsync(BluetoothCacheMode.Uncached);
@@ -177,30 +226,39 @@ namespace BLE_Serial_Terminal
                 }
 
                 Debug.WriteLine($"All Services Status: {allServices.Status}");
+                
 
-                DeviceAccessStatus accessStatus = await device.RequestAccessAsync(); //追加20260301
-                if (accessStatus == DeviceAccessStatus.Allowed)
-                {
-                    Debug.WriteLine("BLE device accessStatu: Allowed");
-                }
-                else
-                {
-                    Debug.WriteLine("BLE device accessStatu: Not allowed");
-                }
-                // debug information  ---to here
-
+                // debug information
                 /*
-                    connecting Selected Device > UART-E-2
+                    connecting Selected Device > UART test
+                    The device has been connected.
+                    BLE device accessStatu: Allowed
                     Status with Session: Success
                     device.ConnectionStatus: Connected
+                    Max PDU Size: 256
                     All Services Status: Success
-                    BLE device accessStatu: Allowed
+                    Max PDU Size: 256
+                    Service.status: Success
+                    Service.count: 1
+                    Max PDU Size: 256
+                    CharacteristicsTX.Status: Success
+                    CharacteristicsTX.String: Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristicsResult
+                    Max PDU Size: 256
+                    Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic
+                    CharacteristicsRX.Status: Success
+                    CharacteristicsRX.String: Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristicsResult
+                    Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic
+                    device.GetGattServicesAsync Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceServicesResult
+                    device.GetGattServicesAsync : Success
+                    status: Success
+                    Server has been informed of clients interest.
                 */
 
                 //Retrieve services from UUID
                 //var services = await device.GetGattServicesForUuidAsync(new Guid(SERVICE_UUID), BluetoothCacheMode.Uncached);
-                  var services = await device.GetGattServicesForUuidAsync(new Guid(SERVICE_UUID), BluetoothCacheMode.Cached);
+                var services = await device.GetGattServicesForUuidAsync(new Guid(SERVICE_UUID), BluetoothCacheMode.Cached);
                 Debug.WriteLine($"Service.status: {services.Status}");
+                Debug.WriteLine($"Service.count: {services.Services.Count}");
 
                 //Retrieve characteristics from UUID
                 var characteristicsTX = await services.Services[0].GetCharacteristicsForUuidAsync(new Guid(CHARACTERISTIC_UUID_TX), BluetoothCacheMode.Uncached);
@@ -217,6 +275,8 @@ namespace BLE_Serial_Terminal
 
                 cRX = characteristicsRX.Characteristics[0];
                 Debug.WriteLine(cRX.ToString());
+
+                /*TrialSend("test");*/
 
                 GattDeviceServicesResult result = await device.GetGattServicesAsync(BluetoothCacheMode.Uncached);
                 //This should ensure that the Connect command is reliably transmitted to the server.
@@ -259,6 +319,7 @@ namespace BLE_Serial_Terminal
                 //Debug.WriteLine("device.ConnectionStatus = " + device.ConnectionStatus);
                 if (device!=null && device.ConnectionStatus == BluetoothConnectionStatus.Connected)
                 {
+                    if (session != null) session.MaintainConnection = false;
                     cTX.Service.Dispose();
                     cTX = null;
                     device.Dispose();
@@ -361,6 +422,20 @@ namespace BLE_Serial_Terminal
             if (this.cBoxClearSending.Checked) this.textToBeSent.Clear();
         }
 
+        /*private async void TrialSend(string str)
+        {
+            if (str == "") return;
+            byte[] byte_str = System.Text.Encoding.ASCII.GetBytes(str);
+            try
+            {
+                await cRX.WriteValueAsync(byte_str.AsBuffer());
+            }
+            catch (Exception e1)
+            {
+                Debug.WriteLine(e1);
+            }
+        }*/
+
         private byte[] StreamToBytes(Stream stream)
         {
             byte[] bytes = new byte[stream.Length];
@@ -385,7 +460,7 @@ namespace BLE_Serial_Terminal
             else
             {
                 // 1. 表示エリアの左上隅(0,0)の文字インデックスを取得
-                int charIndex = this.textBoxReceived.GetCharIndexFromPosition(new Point(0, 0));
+                int charIndex = this.textBoxReceived.GetCharIndexFromPosition(new System.Drawing.Point(0, 0));
                 // 2. その文字インデックスから行番号を取得
                 int firstVisibleLine = this.textBoxReceived.GetLineFromCharIndex(charIndex);
                 Debug.WriteLine($"0 st->{firstVisibleLine} ln->{this.textBoxReceived.Lines.Length} tx->[{text1}]");
