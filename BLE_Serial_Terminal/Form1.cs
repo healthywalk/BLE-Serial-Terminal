@@ -159,6 +159,8 @@ namespace BLE_Serial_Terminal
                 if (device == null)
                 {
                     Debug.WriteLine("Device connection failed.");
+                    this.deviceConnected = false;
+                    return;
                 }
                 else
                 {
@@ -193,6 +195,8 @@ namespace BLE_Serial_Terminal
                 else
                 {
                     Debug.WriteLine("BLE device accessStatu: Not allowed");
+                    this.deviceConnected = false;
+                    return;
                 }
 
                 //using (var session = await GattSession.FromDeviceIdAsync(device.BluetoothDeviceId))
@@ -288,6 +292,8 @@ namespace BLE_Serial_Terminal
                 else
                 {
                     Debug.WriteLine("device.GetGattServicesAsync : false");
+                    this.deviceConnected = false;
+                    return;
                 }
 
                 //Set up a callback to receive notifications.
@@ -304,6 +310,7 @@ namespace BLE_Serial_Terminal
                 else
                 {
                     Debug.WriteLine("** error ** Server has not been informed of clients interest.");
+                    this.deviceConnected = false;
                 }
             }
             catch (Exception e)
@@ -359,8 +366,10 @@ namespace BLE_Serial_Terminal
         {
             if (this.btnConnect.Text == "Connect")
             {
-                this.btnConnect.Enabled = false;
                 string itemstr = (string)cmbBoxDevice.SelectedItem;
+                if (itemstr == null) return;
+                if (itemstr.Length <= 17) return;
+                this.btnConnect.Enabled = false;
                 string adr1 = itemstr.Substring(itemstr.Length - 17);
                 //Debug.WriteLine(adr1);
                 string adr2 = adr1.Replace(":", "");
