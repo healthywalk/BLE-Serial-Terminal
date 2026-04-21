@@ -1,10 +1,6 @@
 # BLE_Serial_Terminal
 
-<<<<<<< HEAD
 ### BLE UartSerial terminal app for Windows PC with custom buttons
-=======
-### BLE Uart Serial terminal app for Windows PC with custom buttons
->>>>>>> 486fa6397d752ebc76b6554c1d99d3055088e013
 
 * A Windows PC application designed to communicate with a microcontroller using BLE. Communicates using the BLE UART Profile. It works on Windows 10 and 11.
 * The Windows PC acts as a Central (or Master or Observer) of the BLE connection communication. The other microcontroller acts as a Peripheral (or Slave or Broadcaster).

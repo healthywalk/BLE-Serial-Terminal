@@ -1,0 +1,12 @@
+C:\Users\tommy\source\repos\BLE_Serial_Terminal\BLE_Serial_Terminal\bin\Debug\BLE_Serial_Terminal.exe.config
+C:\Users\tommy\source\repos\BLE_Serial_Terminal\BLE_Serial_Terminal\bin\Debug\BLE_Serial_Terminal.exe
+C:\Users\tommy\source\repos\BLE_Serial_Terminal\BLE_Serial_Terminal\bin\Debug\BLE_Serial_Terminal.pdb
+C:\Users\tommy\source\repos\BLE_Serial_Terminal\BLE_Serial_Terminal\obj\Debug\BLE_Serial_Terminal.csproj.AssemblyReference.cache
+C:\Users\tommy\source\repos\BLE_Serial_Terminal\BLE_Serial_Terminal\obj\Debug\BLE_Serial_Terminal.Form1.resources
+C:\Users\tommy\source\repos\BLE_Serial_Terminal\BLE_Serial_Terminal\obj\Debug\BLE_Serial_Terminal.Form2.resources
+C:\Users\tommy\source\repos\BLE_Serial_Terminal\BLE_Serial_Terminal\obj\Debug\BLE_Serial_Terminal.Properties.Resources.resources
+C:\Users\tommy\source\repos\BLE_Serial_Terminal\BLE_Serial_Terminal\obj\Debug\BLE_Serial_Terminal.csproj.GenerateResource.cache
+C:\Users\tommy\source\repos\BLE_Serial_Terminal\BLE_Serial_Terminal\obj\Debug\BLE_Serial_Terminal.csproj.CoreCompileInputs.cache
+C:\Users\tommy\source\repos\BLE_Serial_Terminal\BLE_Serial_Terminal\obj\Debug\BLE_Serial_Terminal.exe
+C:\Users\tommy\source\repos\BLE_Serial_Terminal\BLE_Serial_Terminal\obj\Debug\BLE_Serial_Terminal.pdb
+C:\Users\tommy\source\repos\BLE_Serial_Terminal\BLE_Serial_Terminal\obj\Debug\BLE_Serial_Terminal.exe.config
