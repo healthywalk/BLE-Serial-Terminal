@@ -28,8 +28,8 @@ namespace BLE_Serial_Terminal
         private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
         [DllImport("user32.dll")]
         public static extern int SendMessage(IntPtr hWnd, Int32 wMsg, bool wParam, Int32 lParam);
-        private const int WM_SETREDRAW = 11; //描画停止再開メッセージ
-        private const int EM_LINESCROLL = 0x00B6; // スクロールメッセージ
+        private const int WM_SETREDRAW = 11;      // Drawing stopped and resumed message
+        private const int EM_LINESCROLL = 0x00B6; // Scrolling message
 
         private BluetoothLEAdvertisementWatcher watcher;
         private bool deviceConnected = false;
@@ -39,15 +39,15 @@ namespace BLE_Serial_Terminal
             InitializeComponent();
             //Properties.Settings.Default.Reload();
             Load += Form1_Load;
-            ScanBle();                 //起動と同時にBleデバイスとの接続を試みる。
+            ScanBle();                 //The system attempts to connect to a BLE device upon startup.
         }
 
         private async void Form1_Load(object sender, EventArgs e)
         {
-            //ApplicationExitイベントハンドラを追加
+            //ApplicationExit    Add an event handler.
             Application.ApplicationExit += new EventHandler(Application_ApplicationExit);
 
-            // 送信時の改行
+            // Line breaks when sending
             this.cmbBoxLBSend.Items.Clear();
             this.cmbBoxLBSend.Items.Add("CR");
             this.cmbBoxLBSend.Items.Add("LF");
@@ -55,23 +55,23 @@ namespace BLE_Serial_Terminal
             this.cmbBoxLBSend.Items.Add("NONE");
             this.cmbBoxLBSend.SelectedIndex = Properties.Settings.Default.linebreaks;
 
-            //ローカルエコー
+            //Local echo
             this.cBoxLocalEcho.Checked = Properties.Settings.Default.localecho;
 
-            //タイムスタンプ
+            //Timestamp
             this.cBoxTimeStamp.Checked = Properties.Settings.Default.timestamp;
 
             this.cBoxAutoScroll.Checked = true;
 
-            //デバイス候補コンボボックス
+            //Device Candidate Combo Box
             this.cmbBoxDevice.Items.Clear();
             this.cmbBoxDevice.SelectedIndex = -1;
             NumItems = 0;
 
-            //入力textbox
+            //Input box for sending
             this.textToBeSent.Enabled = false;
 
-            //sendボタン
+            //Send button
             this.btnSend.Enabled = false;
 
             //costum button setting
@@ -82,7 +82,7 @@ namespace BLE_Serial_Terminal
 
         }
 
-        //スキャン他　起動時に呼び出し
+        //Scan and other functions are called upon startup.
         private async void ScanBle()
         {
             watcher = new BluetoothLEAdvertisementWatcher();
@@ -92,7 +92,7 @@ namespace BLE_Serial_Terminal
             this.btnScan.Enabled = false;
             //this.Cursor = Cursors.WaitCursor;
             //Debug.WriteLine("ScanBle");
-            //5秒間スキャンする
+            //Scan for 5 seconds
             await Task.Delay(5000);
             //this.Cursor = Cursors.Default;
             watcher.Stop();
@@ -105,7 +105,7 @@ namespace BLE_Serial_Terminal
         private int NumItems;
         public void Watcher_Received(BluetoothLEAdvertisementWatcher sender, BluetoothLEAdvertisementReceivedEventArgs args)
         {
-            //登録する
+            //register
             //BLEAddress = args.BluetoothAddress;
             string adr = args.BluetoothAddress.ToString("X12");
             Debug.WriteLine("Watcher_Received > " + adr);
@@ -113,7 +113,7 @@ namespace BLE_Serial_Terminal
             string devaddress = adr.Substring(0, 2)+":"+ adr.Substring(2, 2) + ":" + adr.Substring(4, 2) + ":"
                               + adr.Substring(6, 2) + ":" + adr.Substring(8, 2) + ":" + adr.Substring(10, 2);
             string devname = args.Advertisement.LocalName;
-            //string deviceID = args.Id; これはない
+            //string deviceID = args.Id; This is not possible.
             if (devname.Length == 0) return;
             Debug.WriteLine("Watcher_Received > " + devname + " :  " + devaddress);
             foreach (string item in this.cmbBoxDevice.Items)
@@ -139,9 +139,9 @@ namespace BLE_Serial_Terminal
 
         private BluetoothLEDevice device;
 
-        //受信関係はTX，送信関係はRXになる。
-        //Serverを中心に考えるため，このアプリはClientなので，意味が逆になる
-        //元の意味はTX:Transmitter，RX:Receiver
+        //TX is used for receiving, and RX is used for transmitting.
+        //Since we're thinking from a server-centric perspective, and this application is a client, the meaning is reversed.
+        //The original meanings are TX: Transmitter, RX: Receiver
         private GattCharacteristic cTX;
         private GattCharacteristic cRX;
 
@@ -149,11 +149,12 @@ namespace BLE_Serial_Terminal
         private String devicename;
         static private GattSession session = null;
 
+
         async Task connectSelectedDevice()
         {
             try
             {
-                //デバイスに接続する
+                //Connect to the device
                 Debug.WriteLine($"connecting Selected Device > {devicename}");
                 device = await BluetoothLEDevice.FromBluetoothAddressAsync(address);
                 if (device == null)
@@ -168,26 +169,39 @@ namespace BLE_Serial_Terminal
                 }
 
                 Debug.WriteLine($"0 device.ConnectionStatus: {device.ConnectionStatus}");
+                //At this stage, "0 device.ConnectionStatus: Disconnected" will be displayed.
 
+                /* Since the handling of passkeys is entirely left to the OS, this description seems unnecessary.
                 if (device.DeviceInformation.Pairing.CanPair && !device.DeviceInformation.Pairing.IsPaired)
                 {
-                    // パスキー入力のポップアップを出す、またはシステムに任せる
-                    //evicePairingProtectionLevel
-                    //  Encryption 暗号化を使用してデバイスをペアリングします。
-                    //  EncryptionAndAuthentication 暗号化と認証を使用してデバイスをペアリングします。
-                    //  None 保護レベルを使用せず、デバイスをペアリングします。
+                    // Handling of Passkey
+                    //  DevicePairingProtectionLevel ::
+                    //  Encryption : Use encryption to pair the devices.
+                    //  EncryptionAndAuthentication : Pair devices using encryption and authentication.
+                    //  None : Pair the devices without using any protection levels.
                     //var pairingResult = await device.DeviceInformation.Pairing.PairAsync(DevicePairingProtectionLevel.None);
-                    //デフォルトの設定でペアリングを試みます
+                    //Attempting pairing with default settings.
                     var pairingResult = await device.DeviceInformation.Pairing.PairAsync();
-                    Console.WriteLine($"Pairing Status: {pairingResult.Status}");
+                    Console.WriteLine($"* Pairing Status: {pairingResult.Status}");
+                    Console.WriteLine($"* Pairing IsPaired: {device.DeviceInformation.Pairing.IsPaired}");
+                    if (pairingResult.Status == DevicePairingResultStatus.Paired)
+                    {
+                         Console.WriteLine($"** Pairing Status: success");
+                    }
+                    else if (pairingResult.Status == DevicePairingResultStatus.Failed)
+                    {
+                        Console.WriteLine($"** Pairing Status: failed");
+                    }
                 }
                 else
                 {
                     Console.WriteLine($"Pairing CanPair: {device.DeviceInformation.Pairing.CanPair}");
                     Console.WriteLine($"Pairing IsPaired: {device.DeviceInformation.Pairing.IsPaired}");
                 }
+                */
 
-                DeviceAccessStatus accessStatus = await device.RequestAccessAsync(); //追加20260301
+
+                DeviceAccessStatus accessStatus = await device.RequestAccessAsync();
                 if (accessStatus == DeviceAccessStatus.Allowed)
                 {
                     Debug.WriteLine("BLE device accessStatu: Allowed");
@@ -203,19 +217,18 @@ namespace BLE_Serial_Terminal
                 session = await GattSession.FromDeviceIdAsync(device.BluetoothDeviceId);
                 {
                     session.MaintainConnection = true; // Keep the session as is.
-                    //NimBLEはここでonConnectが発火する
-                    //BLE (esp32/Espressif Systems 3.2.1) もここでonConnectが発火する
+                    //This is where the peripheral's onConnect event is triggered.
 
                     // Retrieve the service while maintaining the session.
                     //var services0 = await device.GetGattServicesAsync(BluetoothCacheMode.Uncached);
+                    //If this is set to Uncached, it will fail.
                     var services0 = await device.GetGattServicesAsync(BluetoothCacheMode.Cached);
-                    //NimBLEはここでonConnectが発火する（session.MaintainConnection = true; がなかった場合）
                     Debug.WriteLine($"Status with Session: {services0.Status}");
                 }
 
                 Debug.WriteLine($"1 device.ConnectionStatus: {device.ConnectionStatus}");
 
-                var maxPduSize = session.MaxPduSize; //試しに接続する
+                var maxPduSize = session.MaxPduSize; //Try connecting
                 Debug.WriteLine($"Max PDU Size: {maxPduSize}");
                 
 
@@ -230,24 +243,22 @@ namespace BLE_Serial_Terminal
                 }
 
                 Debug.WriteLine($"All Services Status: {allServices.Status}");
-                
 
-                // debug information
+
+                // Example of a debug screen display
                 /*
-                    connecting Selected Device > UART test
+                    connecting Selected Device > eps32-uart-demo
                     The device has been connected.
+                    0 device.ConnectionStatus: Disconnected
                     BLE device accessStatu: Allowed
                     Status with Session: Success
-                    device.ConnectionStatus: Connected
+                    1 device.ConnectionStatus: Connected
                     Max PDU Size: 256
                     All Services Status: Success
-                    Max PDU Size: 256
                     Service.status: Success
                     Service.count: 1
-                    Max PDU Size: 256
                     CharacteristicsTX.Status: Success
                     CharacteristicsTX.String: Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristicsResult
-                    Max PDU Size: 256
                     Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic
                     CharacteristicsRX.Status: Success
                     CharacteristicsRX.String: Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristicsResult
@@ -329,6 +340,14 @@ namespace BLE_Serial_Terminal
                     if (session != null) session.MaintainConnection = false;
                     cTX.Service.Dispose();
                     cTX = null;
+                    /* Unpair when disconnected.
+                    var device1 = await BluetoothLEDevice.FromBluetoothAddressAsync(address);
+                    if (device1.DeviceInformation.Pairing.IsPaired)
+                    {
+                        var result = await device.DeviceInformation.Pairing.UnpairAsync();
+                        Debug.WriteLine($"unpaired result : {result.Status}");
+                    }
+                    */
                     device.Dispose();
                     device = null;
                     this.deviceConnected = false;
@@ -514,8 +533,8 @@ namespace BLE_Serial_Terminal
             }
         }
 
-       //終了時の処理
-        //ApplicationExitイベントハンドラ
+        //Processing at the end
+        //ApplicationExit event handler
         private void Application_ApplicationExit(object sender, EventArgs e)
         {
             Properties.Settings.Default.linebreaks = this.cmbBoxLBSend.SelectedIndex;
@@ -541,7 +560,7 @@ namespace BLE_Serial_Terminal
             Properties.Settings.Default.Save();
             //Debug.WriteLine("default properties saved");
 
-            //ApplicationExitイベントハンドラを削除
+            //Removed the ApplicationExit event handler.
             Application.ApplicationExit -= new EventHandler(Application_ApplicationExit);
 
             disconnectDevice();
@@ -557,7 +576,7 @@ namespace BLE_Serial_Terminal
         private void generateCustumButton()
         {
             this.custumbuttons = new Button[NumButtons];
-            string[] buttontext = new string[NumButtons]; //これは作業用
+            string[] buttontext = new string[NumButtons]; //This is for work
             this.stringtobesent = new string[NumButtons];
             this.justinsert = new string[NumButtons];
             int num = 0;
@@ -603,10 +622,10 @@ namespace BLE_Serial_Terminal
             {
                 int i = i0 % 10;
                 int j = i0 / 10;
-                //ボタンコントロールのインスタンス作成
+                //Creating an instance of a button control
                 this.custumbuttons[i0] = new Button();
 
-                //プロパティ設定
+                //Property settings
                 this.custumbuttons[i0].Name = "custumbtn" + (i0 + 1).ToString();
                 this.custumbuttons[i0].Text = buttontext[i0];
 
@@ -616,7 +635,7 @@ namespace BLE_Serial_Terminal
                 this.custumbuttons[i0].Left = this.textToBeSent.Left + 67 * i + (i / 5) * 13 - 3;
                 this.custumbuttons[i0].Tag = i0;
 
-                //コントロールをフォームに追加
+                //Add controls to the form
                 this.Controls.Add(this.custumbuttons[i0]);
                 this.custumbuttons[i0].Click += new System.EventHandler(custumbtnclick);
                 this.custumbuttons[i0].MouseDown += new MouseEventHandler(Buttons_MouseDown);

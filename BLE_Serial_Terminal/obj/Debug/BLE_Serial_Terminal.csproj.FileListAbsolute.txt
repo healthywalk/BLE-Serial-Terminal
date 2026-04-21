@@ -9,3 +9,4 @@ C:\Users\tommy\source\repos\BLE_Serial_Terminal\BLE_Serial_Terminal\obj\Debug\BL
 C:\Users\tommy\source\repos\BLE_Serial_Terminal\BLE_Serial_Terminal\obj\Debug\BLE_Serial_Terminal.csproj.CoreCompileInputs.cache
 C:\Users\tommy\source\repos\BLE_Serial_Terminal\BLE_Serial_Terminal\obj\Debug\BLE_Serial_Terminal.exe
 C:\Users\tommy\source\repos\BLE_Serial_Terminal\BLE_Serial_Terminal\obj\Debug\BLE_Serial_Terminal.pdb
+C:\Users\tommy\source\repos\BLE_Serial_Terminal\BLE_Serial_Terminal\obj\Debug\BLE_Serial_Terminal.exe.config
