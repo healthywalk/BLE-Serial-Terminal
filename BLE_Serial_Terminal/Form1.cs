@@ -220,9 +220,10 @@ namespace BLE_Serial_Terminal
                     //This is where the peripheral's onConnect event is triggered.
 
                     // Retrieve the service while maintaining the session.
-                    //var services0 = await device.GetGattServicesAsync(BluetoothCacheMode.Uncached);
-                    //If this is set to Uncached, it will fail.
-                    var services0 = await device.GetGattServicesAsync(BluetoothCacheMode.Cached);
+                    var services0 = await device.GetGattServicesAsync(BluetoothCacheMode.Uncached);
+                    //var services0 = await device.GetGattServicesAsync(BluetoothCacheMode.Cached);
+                    //20260629 Previously, this part only worked if set to 'cached',
+                    // but now it only works if set to 'uncached'. Everything is consistent now.
                     Debug.WriteLine($"Status with Session: {services0.Status}");
                 }
 
