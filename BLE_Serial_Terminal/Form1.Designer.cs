@@ -216,7 +216,7 @@ namespace BLE_Serial_Terminal
             // 
             this.textBoxReceived.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.textBoxReceived.ForeColor = System.Drawing.SystemColors.Info;
-            this.textBoxReceived.Location = new System.Drawing.Point(12, 179);
+            this.textBoxReceived.Location = new System.Drawing.Point(12, 240);
             this.textBoxReceived.Multiline = true;
             this.textBoxReceived.Name = "textBoxReceived";
             this.textBoxReceived.ReadOnly = true;
@@ -277,7 +277,7 @@ namespace BLE_Serial_Terminal
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(702, 485);
+            this.ClientSize = new System.Drawing.Size(702, 550);
             this.Controls.Add(this.cBoxAutoScroll);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);

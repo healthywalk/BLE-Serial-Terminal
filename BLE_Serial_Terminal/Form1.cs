@@ -572,7 +572,7 @@ namespace BLE_Serial_Terminal
         private string[] justinsert;
         private const String Notsetyet = "undefined";
         private const String Notsetyet_old = "Not set yet";
-        private const int NumButtons = 20;
+        private const int NumButtons = 40;
 
         private void generateCustumButton()
         {
@@ -630,8 +630,8 @@ namespace BLE_Serial_Terminal
                 this.custumbuttons[i0].Name = "custumbtn" + (i0 + 1).ToString();
                 this.custumbuttons[i0].Text = buttontext[i0];
 
-                this.custumbuttons[i0].Top = this.textToBeSent.Bottom + 20 + j * 27;
-                this.custumbuttons[i0].Height = 25;
+                this.custumbuttons[i0].Top = this.textToBeSent.Bottom + 20 + j * 30;
+                this.custumbuttons[i0].Height = 28;
                 this.custumbuttons[i0].Width = 62;
                 this.custumbuttons[i0].Left = this.textToBeSent.Left + 67 * i + (i / 5) * 13 - 3;
                 this.custumbuttons[i0].Tag = i0;
