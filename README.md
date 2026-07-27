@@ -24,7 +24,8 @@
 
 ### How to use
 
-* Please verify in advance that your Windows PC's Bluetooth device is compatible with the peripheral's Bluetooth version.
+* Verify in advance that your Windows PC's Bluetooth device is compatible with the peripheral's Bluetooth version.
+* Turn on Bluetooth in your Windows PC settings.
 * On the microcontroller, run a program that uses the BLE connection communication.
 * Open "BLE_Serial_Terminal".
 * Select desired BLE device. If you cannot find your BLE device, use the "Scan BLE Dev" button.
